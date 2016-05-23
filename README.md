@@ -1,1 +1,1 @@
-# nips2016
+# Scripts submitted as supplementary material to NIPS 2016
