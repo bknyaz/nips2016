@@ -1,2 +1,4 @@
-A Matlab demo script submitted as supplementary material to NIPS 2016
+A Matlab demo script (recursive_autoconv_demo.m) submitted as supplementary material for paper "Autoconvolution for Unsupervised Feature Learning" to NIPS 2016
+Tested on Matlab 2015b, no specific toolboxes or dependencies are required
+
 

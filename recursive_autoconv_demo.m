@@ -1,4 +1,4 @@
-% This is the demo code for the paper "Autoconvolution for unsupervised feature learning"
+% This is Matlab demo code for the paper "Autoconvolution for unsupervised feature learning"
 % It implements the recursive autconvolution operator which can be applied for arbitrary images
 % The code below is intended for the demo purposes only, so it is not optimized and some bad coding practice may occur
 % You should use it as following:
