@@ -1,36 +1,40 @@
 % This is Matlab demo code for the paper "Autoconvolution for unsupervised feature learning"
-% It implements the recursive autconvolution operator which can be applied for arbitrary images
+% It implements the recursive autconvolution operator which can be applied to arbitrary images
 % The code below is intended for the demo purposes only, so it is not optimized and some bad coding practice may occur
 % You should use it as following:
-% recursive_autoconv_demo() or recursive_autoconv_demo(path_to_your_image_file)
-% path_to_your_image_file must be the path Matlab is able to find, e.g., recursive_autoconv_demo('stl10_sample2.png')
+% recursive_autoconv_demo() or recursive_autoconv_demo(path_to_your_image_file) or recursive_autoconv_demo(I),
+% where 'path_to_your_image_file' must be the path Matlab is able to find, e.g., recursive_autoconv_demo('stl10_sample2.png'),
+% and I - a matrix containing image, e.g., 96x96x3 for STL-10.
+% You can feed MNIST, CIFAR-10 or other images as well
 % In result, you will see a figure with 5 patches and 5 autoconvolution orders (n) from 0 to 4.
 
 function recursive_autoconv_demo(varargin)
 
 if (nargin == 0)
-    im_path = 'stl10_sample1.png';
+    I = 'stl10_sample1.png';
 elseif (nargin == 1)
-    im_path = varargin{1};
+    I = varargin{1};
 else
     error('only one argument can be passed')
 end
 
-I = imread(im_path);
+if (ischar(I))
+    I = imread(I);
+end
 
 % let's extract several (random) patches from the image
-opts.cropSize = [size(I,1), round(size(I,1)/2), min(size(I,1),[13,13,13])];
+opts.cropSize = [size(I,1), round(size(I,1)/2), min(size(I,1),[13,13,13])]; % the first one will be as big as the input image
 opts.conv_orders = repmat({1:5}, 1, length(opts.cropSize));  
 
 filters = extract_2D(I, opts);
 
-% visualize extracted patches in their original sizes
+% visualize extracted patches
 close all
 figure('units','normalized','outerposition',[0 0 1 1])
 sz = size(filters);
 for it = 1:numel(filters)
     subplot(sz(1),sz(1),it);
-    imshow(mat2gray(imresize(filters{it},[30,30])));
+    imshow(mat2gray(imresize(filters{it},[30,30]))); % resize for visualization purposes
     [a,b] = ind2sub(size(filters),it);
     title(sprintf('patch %d, n = %d', a, b), 'FontSize', 10);
 end
