@@ -1,1 +1,2 @@
-# Scripts submitted as supplementary material to NIPS 2016
+A Matlab demo script submitted as supplementary material to NIPS 2016
+
