@@ -1,4 +1,4 @@
-% This is Matlab demo code for the paper "Autoconvolution for unsupervised feature learning"
+% This is Matlab demo code for paper "Autoconvolution for unsupervised feature learning"
 % It implements the recursive autconvolution operator which can be applied to arbitrary images
 % The code below is intended for the demo purposes only, so it is not optimized and some bad coding practice may occur
 % You should use it as following:
@@ -55,10 +55,10 @@ for crop_iter = 1:length(opts.cropSize)
 end
 end
 
-function y_conv = autoconv_recursive_2d(x, n_MAX, filterSize)
+function y_conv = autoconv_recursive_2d(X, n_MAX, filterSize)
 % This is a function implementing expression (2) in the paper
 
-% x - a random image (patch) in the spatial domain
+% X - a random image (patch) in the spatial domain
 % n_MAX - the last autoconvolution order (we use n_MAX <= 4)
 % filterSize - desired size of produced patches
 % y_conv - a collection of autoconvolutional patches for orders n=0,1,...,n_MAX
@@ -68,58 +68,54 @@ y_conv = cell(2,n_MAX+1); % initialize the collection
 
 for n = 0:n_MAX
     if (n > 0)
-        Y = autoconv_2d(x); % single iteration of autoconvolution applied to x
-        x = real(ifft2(Y).* numel(Y)); % inverse Fourier transform
+        Y = autoconv_2d(X); % single iteration of autoconvolution applied to X
+        X = real(ifft2(Y).* numel(Y)); % inverse Fourier transform
         if (n == 3)
-            x = imresize(x, 0.5); % resize to make the image smaller for the next iteration
+            X = imresize(X, 0.5); % resize to make the image smaller for the next iteration
         elseif (n == 2 || n == 4 || n > 4)
             if (rand > 0.5) % decide randomly what to do next
-                x = imresize(x, 0.5); % resize (take the central part in the frequency domain)
+                X = imresize(X, 0.5); % resize (take the central part in the frequency domain)
             else
-                x = downsample(x, 2, 'space'); % take the central part in the spatial domain
+                X = downsample(X, 2, 'space'); % take the central part in the spatial domain
             end
         end
-        x = mat2gray(real(x)); % normalize in the range [0,1]
-        y_conv{1,n+1} = mat2gray(imresize(x,filterSize)); % resize the result to filterSize
+        X = mat2gray(real(X)); % normalize in the range [0,1]
+        y_conv{1,n+1} = mat2gray(imresize(X,filterSize)); % resize the result to filterSize
     else
         % in case n = 0 we just save an input image patch 
-        if (size(x,1) ~= filterSize(1))
-            y_conv{1,n+1} = single(mat2gray(imresize(x, filterSize)));
+        if (size(X,1) ~= filterSize(1))
+            y_conv{1,n+1} = single(mat2gray(imresize(X, filterSize)));
         else
-            y_conv{1,n+1} = single(mat2gray(x));
+            y_conv{1,n+1} = single(mat2gray(X));
         end
     end
 end
 end
 
-function Y = autoconv_2d(x)
+function Y = autoconv_2d(X)
 % This is a function implementing expression (1) in the paper
-% x - an input image in the spatial domain
-% Y - a result in the frequency domain of convolving x with itself
+% X - an input image in the spatial domain
+% Y - a result in the frequency domain of convolving X with itself
 
-x = x-mean(x(:)); % subtract mean
-sz_org = size(x);
+X = X-mean(X(:)); % subtract mean
+sz_org = size(X);
 vl = false; % we prefer to use simple Matlab implementation
 if (vl) % if Matconvnet
-    kernel = x;
-    x = padarray(x, sz_org(1:2), 'both');
-    Y = fft2(vl_nnconv(single(x),single(kernel),[]));
+    kernel = X;
+    X = padarray(X, sz_org(1:2), 'both');
+    Y = fft2(vl_nnconv(single(X),single(kernel),[]));
 else
     sz = sz_org(1:2).*2-1; 
-    x = padarray(x, sz(1:2)-sz_org(1:2), 'post'); % zero padding to compute linear convolution
-    Y = (fft2(x)./numel(x)).^2; % autoconvolution in the frequency domain 
-
-    % to compute autocorrelation:
-    % f1 = fft2(x1)./numel(x1);
-    % Y = f1.*conj(f1); 
+    X = padarray(X, sz(1:2)-sz_org(1:2), 'post'); % zero padding to compute linear convolution
+    Y = (fft2(X)./numel(X)).^2; % autoconvolution in the frequency domain 
 end
 end
 
 function f = downsample(f, dwn_coef, type, varargin)
-% this a quite general function to take central parts of some signal f with some downsampling coefficient dwn_coef
+% This is a quite general function to take central parts of some signal f with some downsampling coefficient dwn_coef
 % for our purposes we could rewrite it in a much simpler way, but this implementation works fine
 % type can be 'freq', otherwise assumed 'spatial'
-% varargin can be used to specify dimensions along which perform this downsampling
+% varargin can be used to specify dimensions along which to perform the downsampling
 % the size of output f is defined as size(f)/dwn_coef
 
 if (nargin <= 3)
