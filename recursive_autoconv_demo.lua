@@ -1,4 +1,6 @@
--- This is a very basic Lua script alternative to Matlab script recursive_autoconv_demo.m
+-- This is a very basic Lua script alternative to Matlab script recursive_autoconv_demo.m 
+-- for paper "Autoconvolution for unsupervised feature learning"
+-- It implements the recursive autconvolution operator which can be applied to arbitrary images
 -- Run it as following: qlua recursive_autoconv_demo.lua 'path_to_your_image_file' or simply qlua recursive_autoconv_demo.lua
 -- qlua is used instead of lua to display images
 -- In result, you will see 5 windows (one window per patch) with 5 autoconvolution orders (n) from 0 to n_max = 4 in each window.
