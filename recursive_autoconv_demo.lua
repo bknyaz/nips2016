@@ -83,7 +83,3 @@ for patch=1,table.getn(crop_size) do
    -- visualize extracted patches
    image.display{image=X_n, zoom=1, legend=string.format('patch %d',patch) } -- new window for each patch
 end
-
-
-
-
